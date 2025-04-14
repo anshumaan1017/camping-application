@@ -86,8 +86,8 @@ jobs:
               registry.aquasec.com/scanner:latest-saas scan \
               --host ${{ secrets.AQUA_HOST }} \
               --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-              --user ${{ secrets.AQUA_USERNAME }} \
-              --password ${{ secrets.AQUA_PASSWORD }} \
+              --user ${{ secrets.AQUA_REGISTRY_USERNAME }} \
+              --password ${{ secrets.AQUA_REGISTRY_PASS}} \
               --layer-vulnerabilities \
               --no-verify \
               --sarif > image-results.sarif
