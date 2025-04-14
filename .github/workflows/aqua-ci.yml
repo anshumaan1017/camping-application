@@ -101,7 +101,7 @@ jobs:
             --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             registry.aquasec.com/scanner:2022.4 scan \
-            --host ${{ secrets.AQUA_HOST }} \
+            --host https://eu-1.cloud.aquasec.com \
             --local ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.TAG }} \
             --token ${{ secrets.AQUA_TOKEN }} \
             --layer-vulnerabilities \
