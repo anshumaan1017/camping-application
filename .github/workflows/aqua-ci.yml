@@ -102,10 +102,10 @@ jobs:
         with:
           sarif_file: image-results.sarif
 
-          
+
       - name: Upload HTML report
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: aqua-image-scan-results
           path: /scan-output/image-results.html
