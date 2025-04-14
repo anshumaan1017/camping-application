@@ -23,8 +23,8 @@ jobs:
         with:
           aqua-key: ${{ secrets.AQUA_KEY }}
           aqua-secret: ${{ secrets.AQUA_SECRET }}
-
-        access-token: ${{ secrets.GITHUB_TOKEN }}
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+        
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -68,6 +68,7 @@ jobs:
         with:
           aqua-key: ${{ secrets.AQUA_KEY }}
           aqua-secret: ${{ secrets.AQUA_SECRET }}
+          access-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
