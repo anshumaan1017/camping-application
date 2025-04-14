@@ -62,9 +62,6 @@ jobs:
             type=ref,event=branch
             latest
 
-      - name: Set Image Tag
-        id: tag
-        run: echo "TAG=$(echo '${{ steps.meta.outputs.tags }}' | cut -d',' -f1)" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         uses: docker/build-push-action@v5
