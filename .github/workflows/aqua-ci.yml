@@ -95,18 +95,15 @@ jobs:
  
       - name: Docker Image Scan with AquaSec
         run: |
-          docker run \
-            -e BUILD_JOB_NAME=${{ env.IMAGE_NAME }} \
-            -e BUILD_NUMBER=${{ steps.tag.outputs.TAG }} \
-            --rm \
+          docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            registry.aquasec.com/scanner:2022.4 scan \
-            --host https://eu-1.api.cloudsploit.com  \
-            --local ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.TAG }} \
-            --token ${{ secrets.AQUA_TOKEN }} \
+            registry.aquasec.com/scanner-cli:2402.8.15 scan \
+            -H https://eu-1.cloud.aquasec.com \
+            -A ${{ secrets.AQUA_TOKEN }} \
+            --local ghcr.io/anshumaan1017/3-tier-web-application:${{ steps.tag.outputs.TAG }} \
             --layer-vulnerabilities \
-            --no-verify \
             --sarif > image-results.sarif
+
 
 
       - name: Upload SARIF report
