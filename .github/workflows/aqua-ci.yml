@@ -79,21 +79,24 @@ jobs:
       - name: Image Scan with Aqua SaaS Scanner
         run: |
           docker run \
-              -e BUILD_JOB_NAME=${{ env.IMAGE_NAME }} \
-              -e BUILD_NUMBER=${{ env.IMAGE_TAG }} \
-              --rm \
-              -v /var/run/docker.sock:/var/run/docker.sock \
-              registry.aquasec.com/scanner:2502.7.14 scan \
-              --host ${{ secrets.AQUA_HOST }} \
-              --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-              --token ${{ secrets.AQUA_TOKEN }}
-              --layer-vulnerabilities \
-              --no-verify \ 
-              --verbose-errors \
-              --sarif > image-results.sarif
-
+            --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/scan-output \
+            registry.aquasec.com/scanner:2502.7.14 scan \
+            --host ${{ secrets.AQUA_HOST }} \
+            --token ${{ secrets.AQUA_TOKEN }} \
+            --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            --sariffile /scan-output/image-results.sarif \
+            --layer-vulnerabilities \
+            --scan-malware \
+            --collect-sensitive \
+            --show-negligible \
+            --show-will-not-fix \
+            --no-verify \
+            --verbose-errors
 
       - name: Upload SARIF report
+        if: ${{ always() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: image-results.sarif
