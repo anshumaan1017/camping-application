@@ -90,8 +90,8 @@ jobs:
             --layer-vulnerabilities \
             --scan-malware \
             --collect-sensitive \
-            --show-negligible \
-            --show-will-not-fix \
+            # --show-negligible \
+            # --show-will-not-fix \
             --no-verify \
             --verbose-errors
 
@@ -121,4 +121,4 @@ jobs:
             --aqua-key "${{ secrets.AQUA_KEY }}" \
             --aqua-secret "${{ secrets.AQUA_SECRET }}" \
             --cspm-url https://eu-1.api.cloudsploit.com \
-            --artifact-path "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.TAG }}"
+            --artifact-path "${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}"
