@@ -1,10 +1,12 @@
 name: Aqua-Scan
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  aqua:
+  aqua-misconfiguration-scan:
     name: Aqua scanner
     runs-on: ubuntu-latest
     steps:
@@ -26,23 +28,70 @@ jobs:
           AQUA_URL: https://api.eu-1.supply-chain.cloud.aquasec.com
           CSPM_URL: https://eu-1.api.cloudsploit.com
           TRIVY_RUN_AS_PLUGIN: 'aqua'
-          # For http/https proxy configuration add env vars: HTTP_PROXY/HTTPS_PROXY, CA-CRET (path to CA certificate)
 
+  docker-build-scan:
+    name: Docker Build and Push
+    runs-on: ubuntu-latest
+    needs: [aqua-misconfiguration-scan]
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PAT }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            latest
+
+      - name: Set Image Tag
+        id: tag
+        run: echo "TAG=$(echo '${{ steps.meta.outputs.tags }}' | cut -d',' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
         with:
           context: .
+<<<<<<< HEAD
+=======
           file: .
+>>>>>>> 31f57d03ec0ba4bfd7a3c326ad70aea936a3a9cb
           push: true
-          tags: ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
+<<<<<<< HEAD
+      - name: Image Scan with Trivy Premium
+        run: |
+          docker run \
+            -e BUILD_JOB_NAME=${{ env.IMAGE_NAME }} \
+            -e BUILD_NUMBER=${{ steps.tag.outputs.TAG }} \
+            --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            registry.aquasec.com/scanner:2022.4 scan \
+            --host ${{ secrets.AQUA_HOST }} \
+            --local ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.TAG }} \
+            --token ${{ secrets.AQUA_TOKEN }} \
+            --layer-vulnerabilities \
+            --no-verify \
+            --sarif > results.sarif
+=======
 
       - name: Aqua Sec Docker Image Scan
         run: |
@@ -59,26 +108,30 @@ jobs:
       #     registry: registry.aquasec.com
       #     username: ${{ secrets.AQUA_REGISTRY_USERNAME }}
       #     password: ${{ secrets.AQUA_REGISTRY_PASS }}
+>>>>>>> 31f57d03ec0ba4bfd7a3c326ad70aea936a3a9cb
+
+      - name: Upload SARIF report
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
 
       - name: SBOM/Manifest Generation
         run: |
           export BILLY_SERVER=https://billy.eu-1.codesec.aquasec.com
-          curl -sLo install.sh download.codesec.aquasec.com/billy/install.sh
+          curl -sLo install.sh https://download.codesec.aquasec.com/billy/install.sh
           curl -sLo install.sh.checksum https://github.com/argonsecurity/releases/releases/latest/download/install.sh.checksum
+
           if ! cat install.sh.checksum | sha256sum --check; then
-          echo "install.sh checksum failed"
-          exit 1
+            echo "install.sh checksum failed"
+            exit 1
           fi
+
           BINDIR="." sh install.sh
           rm install.sh install.sh.checksum
+
           ./billy generate \
             --access-token "${{ secrets.GITHUB_TOKEN }}" \
             --aqua-key "${{ secrets.AQUA_KEY }}" \
             --aqua-secret "${{ secrets.AQUA_SECRET }}" \
             --cspm-url https://eu-1.api.cloudsploit.com \
-            --artifact-path "${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}" 
-
-            # The docker image name:tag of the newly built image
-            # --artifact-path "my-image-name:${{ env.tag-version }}" 
-            # OR the path to the root folder of your project. I.e my-repo/my-app 
-            # --artifact-path "${{env.MY_APP_ROOT}}"
+            --artifact-path "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.TAG }}"
