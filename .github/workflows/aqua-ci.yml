@@ -61,12 +61,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PAT }}
 
-      - name: Setup pipeline enforcer
-        uses: aquasecurity/pipeline-enforcer-action@main
-        with:
-          aqua-key: ${{ secrets.AQUA_KEY }}
-          aqua-secret: ${{ secrets.AQUA_SECRET }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
