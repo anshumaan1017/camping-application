@@ -89,7 +89,8 @@ jobs:
               --user ${{ secrets.AQUA_REGISTRY_USERNAME }} \
               --password ${{ secrets.AQUA_REGISTRY_PASS}} \
               --layer-vulnerabilities \
-              --no-verify \
+              --no-verify \ 
+              --verbose-errors \
               --sarif > image-results.sarif
 
 
