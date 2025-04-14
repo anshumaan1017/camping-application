@@ -85,7 +85,7 @@ jobs:
               -v /var/run/docker.sock:/var/run/docker.sock \
               registry.aquasec.com/scanner:2022.4 scan \
               --host ${{ secrets.AQUA_HOST }} \
-              --local ${{ env.DOCKER_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+              --local ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
               --token ${{ secrets.AQUA_TOKEN }} \
               --layer-vulnerabilities \
               --no-verify \
