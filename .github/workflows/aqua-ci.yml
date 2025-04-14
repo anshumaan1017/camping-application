@@ -88,7 +88,6 @@ jobs:
             --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
             --sariffile /scan-output/image-results.sarif \
             --htmlfile /scan-output/image-results.html \
-            --text \ 
             --layer-vulnerabilities \
             # --scan-malware \
             # --collect-sensitive \
