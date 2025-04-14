@@ -68,16 +68,13 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-<<<<<<< HEAD
-=======
           file: .
->>>>>>> 31f57d03ec0ba4bfd7a3c326ad70aea936a3a9cb
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-<<<<<<< HEAD
-      - name: Image Scan with Trivy Premium
+
+      - name: Docker Image Scan with AquaSec
         run: |
           docker run \
             -e BUILD_JOB_NAME=${{ env.IMAGE_NAME }} \
@@ -91,7 +88,7 @@ jobs:
             --layer-vulnerabilities \
             --no-verify \
             --sarif > results.sarif
-=======
+
 
       - name: Aqua Sec Docker Image Scan
         run: |
@@ -108,7 +105,7 @@ jobs:
       #     registry: registry.aquasec.com
       #     username: ${{ secrets.AQUA_REGISTRY_USERNAME }}
       #     password: ${{ secrets.AQUA_REGISTRY_PASS }}
->>>>>>> 31f57d03ec0ba4bfd7a3c326ad70aea936a3a9cb
+
 
       - name: Upload SARIF report
         uses: github/codeql-action/upload-sarif@v3
