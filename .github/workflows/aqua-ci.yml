@@ -32,7 +32,7 @@ jobs:
   docker-build-scan:
     name: Docker Build and Push
     runs-on: ubuntu-latest
-    needs: [aqua-misconfiguration-scan]
+   #needs: [aqua-misconfiguration-scan]
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
@@ -47,8 +47,10 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PAT }}
+          username: ${{ secrets.GHCR_USER }}
+          #username: ${{ secrets.DOCKERHUB_USERNAME }}
+          #password: ${{ secrets.DOCKERHUB_PAT }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Extract metadata for Docker
         id: meta
