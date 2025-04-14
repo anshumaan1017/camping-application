@@ -100,15 +100,14 @@ jobs:
         if: ${{ always() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: image-results.sarif
-
+          sarif_file: $(pwd)/scan-output/image-results.sarif
 
       - name: Upload HTML report
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: aqua-image-scan-results
-          path: /scan-output/image-results.html
+          path: $(pwd)/scan-output/image-results.html
 
 
       - name: SBOM/Manifest Generation
