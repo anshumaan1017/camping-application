@@ -97,7 +97,7 @@ jobs:
         run: |
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            registry.aquasec.com/scanner-cli:2402.8.15 scan \
+            registry.aquasec.com/scanner:2022.4 scan \
             -H https://eu-1.cloud.aquasec.com \
             -A ${{ secrets.AQUA_TOKEN }} \
             --local ghcr.io/anshumaan1017/3-tier-web-application:${{ steps.tag.outputs.TAG }} \
