@@ -48,43 +48,26 @@ jobs:
 
    #needs: [aqua-misconfiguration-scan]
     env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
+      DOCKER_REPOSITORY: ${{ secrets.DOCKERHUB_USERNAME }} # name of Docker Hub Org ID
+      IMAGE_NAME: 3-tier-web-application
+      IMAGE_TAG: ${{ github.run_number }} 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Log in to Docker Hub
+            uses: docker/login-action@v3
+            with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_PAT }}
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.GHCR_USER }}
-          #username: ${{ secrets.DOCKERHUB_USERNAME }}
-          #password: ${{ secrets.DOCKERHUB_PAT }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha,format=long
-            type=ref,event=branch
-            latest
-
-
-      - name: Build and Push Docker image 
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}
 
       - name: Login to Aqua Registry
         uses: docker/login-action@v3
@@ -92,22 +75,12 @@ jobs:
           registry: registry.aquasec.com
           username: ${{ secrets.AQUA_REGISTRY_USERNAME }}
           password: ${{ secrets.AQUA_REGISTRY_PASS }}
- 
-      - name: Docker Image Scan with AquaSec
+          
+      - name: Image Scan with Trivy Premium
         run: |
-          docker run --rm \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            registry.aquasec.com/scanner:2022.4 scan \
-            -H https://eu-1.cloud.aquasec.com \
-            -A ${{ secrets.AQUA_TOKEN }} \
-            --local ghcr.io/anshumaan1017/3-tier-web-application:${{ steps.tag.outputs.TAG }} \
-            --layer-vulnerabilities \
-            --sarif > image-results.sarif
-
-
+          docker run -e BUILD_JOB_NAME=${{ env.IMAGE_NAME}} -e BUILD_NUMBER=${{ env.IMAGE_TAG }} --rm -v /var/run/docker.sock:/var/run/docker.sock registry.aquasec.com/scanner:2022.4 scan --host ${{ secrets.AQUA_HOST }} --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}} --token ${{ secrets.AQUA_TOKEN }} --layer-vulnerabilities --no-verify --sarif > image-results.sarif
 
       - name: Upload SARIF report
-        if: ${{ always() }} 
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: image-results.sarif
