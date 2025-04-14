@@ -92,8 +92,8 @@ jobs:
             # --collect-sensitive \
             # --show-negligible \
             # --show-will-not-fix \
-            --no-verify \
-            --verbose-errors
+            # --no-verify \
+            # --verbose-errors
 
       - name: Upload SARIF report
         if: ${{ always() }}
