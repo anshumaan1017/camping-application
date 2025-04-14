@@ -109,10 +109,10 @@ jobs:
       #     password: ${{ secrets.AQUA_REGISTRY_PASS }}
 
 
-      - name: Upload SARIF report
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: results.sarif
+      # - name: Upload SARIF report
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: results.sarif
 
       - name: SBOM/Manifest Generation
         run: |
