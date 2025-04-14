@@ -83,11 +83,10 @@ jobs:
               -e BUILD_NUMBER=${{ env.IMAGE_TAG }} \
               --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              registry.aquasec.com/scanner:latest-saas scan \
+              registry.aquasec.com/scanner:2502.7.14 scan \
               --host ${{ secrets.AQUA_HOST }} \
               --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-              --user ${{ secrets.AQUA_REGISTRY_USERNAME }} \
-              --password ${{ secrets.AQUA_REGISTRY_PASS}} \
+              --token ${{ secrets.AQUA_TOKEN }}
               --layer-vulnerabilities \
               --no-verify \ 
               --verbose-errors \
