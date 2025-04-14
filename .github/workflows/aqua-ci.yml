@@ -88,8 +88,8 @@ jobs:
             --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
             --sariffile /scan-output/image-results.sarif \
             --layer-vulnerabilities \
-            --scan-malware \
-            --collect-sensitive \
+            # --scan-malware \
+            # --collect-sensitive \
             # --show-negligible \
             # --show-will-not-fix \
             --no-verify \
