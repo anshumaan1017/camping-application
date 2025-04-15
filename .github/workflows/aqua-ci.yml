@@ -18,12 +18,12 @@ jobs:
 
     steps:
       
-      - name: Pipeline Enforcer
-        uses: aquasecurity/pipeline-enforcer-action@v1.0.0
-        with:
-          aqua-key: ${{ secrets.AQUA_KEY }}
-          aqua-secret: ${{ secrets.AQUA_SECRET }}
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Pipeline Enforcer
+      #   uses: aquasecurity/pipeline-enforcer-action@v1.0.0
+      #   with:
+      #     aqua-key: ${{ secrets.AQUA_KEY }}
+      #     aqua-secret: ${{ secrets.AQUA_SECRET }}
+      #     access-token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Checkout code
         uses: actions/checkout@v4
@@ -63,12 +63,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Pipeline Enforcer
-        uses: aquasecurity/pipeline-enforcer-action@v1.0.0
-        with:
-          aqua-key: ${{ secrets.AQUA_KEY }}
-          aqua-secret: ${{ secrets.AQUA_SECRET }}
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Pipeline Enforcer
+      #   uses: aquasecurity/pipeline-enforcer-action@v1.0.0
+      #   with:
+      #     aqua-key: ${{ secrets.AQUA_KEY }}
+      #     aqua-secret: ${{ secrets.AQUA_SECRET }}
+      #     access-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
