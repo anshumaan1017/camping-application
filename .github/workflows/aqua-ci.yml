@@ -37,6 +37,12 @@ jobs:
           CSPM_URL: https://eu-1.api.cloudsploit.com 
           TRIVY_RUN_AS_PLUGIN: 'aqua'
 
+      - name: Upload Trivy scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: aqua-sast-results
+          path: aqua-sscs-results.json
+
   docker-build-scan: 
     name: Docker Build and Push
     runs-on: ubuntu-latest
