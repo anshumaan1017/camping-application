@@ -101,7 +101,7 @@ jobs:
           
       - name: Image Scan with Aqua SaaS Scanner
         run: | 
-          docker run \
+          docker run -e env=uat \
             --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v $(pwd):/scan-output \
@@ -112,7 +112,6 @@ jobs:
             --sariffile /scan-output/image-results.sarif \
             --htmlfile /scan-output/image-results.html \
             --layer-vulnerabilities 
-            -e env=uat
             # --scan-malware \
             # --collect-sensitive \
             # --show-negligible \
