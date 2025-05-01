@@ -24,12 +24,7 @@ jobs:
       - name: Run Aqua scanner 
         uses: docker://aquasec/aqua-scanner
         with:
-          args: trivy fs --format json --output aqua-sscs-results.json --scanners config,vuln,secret --sast --reachability --package-json . 
-          # --template "@contrib/html.tpl" -o report.html 
-          # To customize which severities to scan for, add the following flag: --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          # To enable SAST scanning, add: --sast
-          # To enable reachability scanning, add: --reachability
-          # To enable npm/dotnet/gradle non-lock file scanning, add: --package-json / --dotnet-proj / --gradle
+          args: trivy fs --format json --output aqua-sscs-results.json --format template --template "@contrib/html.tpl" -o aqua-sscs-results.html --scanners config,vuln,secret --sast --reachability --package-json . 
         env:
           AQUA_KEY: ${{ secrets.AQUA_KEY }}
           AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
@@ -37,12 +32,19 @@ jobs:
           AQUA_URL: https://api.eu-1.supply-chain.cloud.aquasec.com 
           CSPM_URL: https://eu-1.api.cloudsploit.com 
           TRIVY_RUN_AS_PLUGIN: 'aqua'
-
-      - name: Upload Trivy scan results
+      
+      - name: Upload JSON scan results
         uses: actions/upload-artifact@v4
         with:
-          name: aqua-sast-results
+          name: aqua-sast-results-json
           path: aqua-sscs-results.json
+      
+      - name: Upload HTML scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: aqua-sast-results-html
+          path: aqua-sscs-results.html
+
 
   docker-build-scan: 
     name: Docker Build and Push
