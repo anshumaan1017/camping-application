@@ -24,7 +24,7 @@ jobs:
       - name: Run Aqua scanner 
         uses: docker://aquasec/aqua-scanner
         with:
-          args: trivy fs --format json --output aqua-sscs-results.json --format template --template "@contrib/html.tpl" -o aqua-sscs-results.html --scanners config,vuln,secret --sast --reachability --package-json . 
+          args: trivy fs --format json --output aqua-sscs-results.json --format template --template "@/usr/bin/html.tpl" -o aqua-sscs-results.html --scanners config,vuln,secret --sast --reachability --package-json . 
         env:
           AQUA_KEY: ${{ secrets.AQUA_KEY }}
           AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
