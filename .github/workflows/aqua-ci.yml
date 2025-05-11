@@ -102,7 +102,7 @@ jobs:
           password: ${{ secrets.AQUA_REGISTRY_PASS }}
           
       - name: Image Scan with Aqua SaaS Scanner
-        run: | 
+        run: |  
           docker run -e env=uat \
             --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
