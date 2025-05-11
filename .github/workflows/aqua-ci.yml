@@ -39,7 +39,13 @@ jobs:
           TRIVY_RUN_AS_PLUGIN: 'aqua'
           # For http/https proxy configuration add env vars: HTTP_PROXY/HTTPS_PROXY, CA-CRET (path to CA certificate)
 
-      
+      - name: Upload Trivy scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: aqua-sast-results
+          path: aqua-sscs-results.json
+          
+
   docker-build-scan: 
     name: Docker Build and Push
     runs-on: ubuntu-latest
@@ -97,7 +103,7 @@ jobs:
           
       - name: Image Scan with Aqua SaaS Scanner
         run: | 
-          docker run  \ 
+          docker run -e env=uat \
             --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v $(pwd):/scan-output \
@@ -107,8 +113,7 @@ jobs:
             --local ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
             --sariffile /scan-output/image-results.sarif \
             --htmlfile /scan-output/image-results.html \
-            --layer-vulnerabilities
-            #--layer-vulnerabilities 
+            --layer-vulnerabilities 
             # --scan-malware \
             # --collect-sensitive \
             # --show-negligible \
