@@ -1,4 +1,4 @@
-name: Aqua-Scan
+name: Aqua-Scan-Prod
 
 on: 
   pull_request:
