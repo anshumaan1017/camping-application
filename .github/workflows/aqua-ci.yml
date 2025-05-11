@@ -101,7 +101,7 @@ jobs:
           username: ${{ secrets.AQUA_REGISTRY_USERNAME }}
           password: ${{ secrets.AQUA_REGISTRY_PASS }}
           
-      - name: Image Scan with Aqua SaaS Scanner
+      - name: Image Scan with Aqua SaaS Scanner 
         run: |  
           docker run -e env=uat \
             --rm \
