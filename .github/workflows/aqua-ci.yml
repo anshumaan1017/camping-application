@@ -45,38 +45,6 @@ jobs:
           name: aqua-sast-results-json
           path: aqua-sscs-results.json
 
-      - name: Run Aqua scanner for Misconfigurations in Code
-        uses: docker://aquasec/aqua-scanner
-        with:
-          #args: trivy fs --format json --output aqua-scan-results.json --scanners config,vuln,secret --sast --reachability --package-json . 
-          args: trivy fs \
-              --format template \
-              --template "@contrib/html.tpl" \
-              --output aqua-report-scan.html \
-              --scanners misconfig,vuln,secret \
-              --sast \
-              --reachability .
-
-          # To customize which severities to scan for, add the following flag: --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          # To enable SAST scanning, add: --sast
-          # To enable reachability scanning, add: --reachability
-          # To enable npm/dotnet/gradle non-lock file scanning, add: --package-json / --dotnet-proj / --gradle
-        env:
-          AQUA_KEY: ${{ secrets.AQUA_KEY }}
-          AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
-          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          AQUA_URL: https://api.asia-1.supply-chain.cloud.aquasec.com
-          CSPM_URL: https://asia-1.api.cloudsploit.com
-          TRIVY_RUN_AS_PLUGIN: 'aqua'
-          # For http/https proxy configuration add env vars: HTTP_PROXY/HTTPS_PROXY, CA-CRET (path to CA certificate)
-
-      - name: Upload HTML scan results
-        if: ${{ always() }} # necessary if using failure thresholds in the image scan
-        uses: actions/upload-artifact@v4
-        with:
-          name: aqua-report-scan-results
-          path: aqua-report-scan.html
-
 
   docker-build-scan: 
     name: Docker Build and Push
@@ -135,7 +103,7 @@ jobs:
           
       - name: Image Scan with Aqua SaaS Scanner 
         run: |  
-          docker run -e env=uat \
+          docker run -e env=uat -e BUILD_JOB_NAME=${{ env.IMAGE_NAME}} \
             --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v $(pwd):/scan-output \
