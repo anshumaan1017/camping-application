@@ -124,21 +124,14 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}
 
-      # - name: Download HTML template for Aqua Trivy
-      #   run: |
-      #     mkdir -p contrib
-      #     curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o contrib/html.tpl
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+            image-ref: '${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}'
+            format: 'template'
+            template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
+            output: 'trivy-report.html'
 
-      - name: Run Trivy scan and generate HTML
-        run: |
-          trivy image \
-            --ignore-unfixed \
-            --vuln-type os,library \
-            --severity CRITICAL,HIGH,MEDIUM \
-            --format template \
-            --template "@contrib/html.tpl" \
-            -o trivy-report.html \
-            "${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}"
 
       - name: Upload Trivy HTML Report
         uses: actions/upload-artifact@v4
