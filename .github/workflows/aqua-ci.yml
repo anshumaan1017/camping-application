@@ -124,7 +124,8 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}
 
-      - name: Trivy Scan - Frontend
+      - name: Trivy Scan - Free Version
+        uses: aquasecurity/trivy-action@master
         run: |
           trivy image \
             --ignore-unfixed \
