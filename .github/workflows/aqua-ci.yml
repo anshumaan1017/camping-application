@@ -124,15 +124,19 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}
 
-      - name: Trivy Scan - Free Version
-        uses: aquasecurity/trivy-action@master
+      - name: Download HTML template for Aqua Trivy
+        run: |
+          mkdir -p contrib
+          curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o contrib/html.tpl
+
+      - name: Run Trivy scan and generate HTML
         run: |
           trivy image \
             --ignore-unfixed \
             --vuln-type os,library \
             --severity CRITICAL,HIGH,MEDIUM \
             --format template \
-            --template "@/contrib/html.tpl" \
+            --template "@contrib/html.tpl" \
             -o trivy-report.html \
             "${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}"
 
@@ -141,7 +145,6 @@ jobs:
         with:
           name: trivy-html-report
           path: trivy-report.html
-
 
       - name: Prisma Cloud image scan - nonprod
         uses: PaloAltoNetworks/prisma-cloud-scan@v1.6.4
