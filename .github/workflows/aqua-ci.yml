@@ -124,10 +124,10 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_REPOSITORY}}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG}}
 
-      - name: Download HTML template for Aqua Trivy
-        run: |
-          mkdir -p contrib
-          curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o contrib/html.tpl
+      # - name: Download HTML template for Aqua Trivy
+      #   run: |
+      #     mkdir -p contrib
+      #     curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o contrib/html.tpl
 
       - name: Run Trivy scan and generate HTML
         run: |
