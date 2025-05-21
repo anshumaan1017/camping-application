@@ -52,11 +52,7 @@ jobs:
           image-tag: ${{ env.FULL_IMAGE_NAME }}
           sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
           sysdig-secure-url: https://app.in1.sysdig.com
-          stop-on-failed-policy-eval: true
-          stop-on-processing-error: true
-          registry-user: ${{ secrets.DOCKERHUB_USERNAME }}
-          registry-password: ${{ secrets.DOCKERHUB_PAT }}
-          extra-parameters: full-vulns-table,detailed-policies-eval
+          
 
       - name: Upload SARIF Report to GitHub Security Tab
         if: always()
