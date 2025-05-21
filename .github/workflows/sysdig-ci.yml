@@ -64,7 +64,7 @@ jobs:
           sysdig-cli-scanner --help
           sysdig-cli-scanner --version
  
-
+ 
       - name: Run Sysdig CLI Scan with JSON output
         env:
             SECURE_API_TOKEN: ${{ env.SYSDIG_SECURE_TOKEN }}
