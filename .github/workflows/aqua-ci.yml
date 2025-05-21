@@ -48,6 +48,7 @@ jobs:
           pcc_user: ${{ secrets.pcc_user }}
           pcc_pass: ${{ secrets.pcc_pass }}
           image_name: ${{ env.FULL_IMAGE_NAME }}
+
       - name: Decode Sysdig Token from Secrets
         id: decode_token
         run: |
@@ -58,7 +59,7 @@ jobs:
         uses: sysdiglabs/scan-action@v5
         with:
           image-tag: ${{ env.FULL_IMAGE_NAME }}
-          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+          sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
           sysdig-secure-url: https://app.in1.sysdig.com
   
 
