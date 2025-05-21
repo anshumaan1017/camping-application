@@ -67,7 +67,7 @@ jobs:
           SECURE_API_TOKEN: ${{ env.SYSDIG_SECURE_TOKEN }}
         run: |
           IMAGE="${{ env.FULL_IMAGE_NAME }}"
-          ./sysdig-cli-scanner --apiurl https://app.in1.sysdig.com "$IMAGE" --policy devsecops_image_policy_enforcement
+          sysdig-cli-scanner --apiurl https://app.in1.sysdig.com "$IMAGE" --policy devsecops_image_policy_enforcement
 
 
       # - name: Decode Sysdig Token from Secrets
