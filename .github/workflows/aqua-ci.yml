@@ -54,7 +54,7 @@ jobs:
         uses: sysdiglabs/scan-action@v5
         with:
           image-tag: ${{ env.FULL_IMAGE_NAME }}
-          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+          sysdig-secure-token: 5998118c-eea1-4358-905f-2b770a28ce86
           sysdig-secure-url: https://app.in1.sysdig.com
           severity-at-least: low
           stop-on-failed-policy-eval: true
