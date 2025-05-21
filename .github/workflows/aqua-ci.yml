@@ -70,13 +70,13 @@ jobs:
         run: |
             IMAGE="${{ env.FULL_IMAGE_NAME }}"
             sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
-              --separate-by-image \
-              --full-vulns-table  \
-              --detailed-policies-eval \
-              --output=json-file=image-results.json \
-              "$IMAGE"
-         #--policy devsecops_image_policy_enforcement \
-            
+            --policy devsecops_image_policy_enforcement \
+            --separate-by-image \
+            --full-vulns-table  \
+            --detailed-policies-eval \
+            --output=json-file=image-results.json \
+            "$IMAGE"
+         
 
       - name: Upload JSON report
         if: ${{ always() }}
