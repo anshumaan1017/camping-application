@@ -48,15 +48,19 @@ jobs:
           pcc_user: ${{ secrets.pcc_user }}
           pcc_pass: ${{ secrets.pcc_pass }}
           image_name: ${{ env.FULL_IMAGE_NAME }}
+      - name: Decode Sysdig Token from Secrets
+        id: decode_token
+        run: |
+          echo "SYSDIG_SECURE_TOKEN=$(echo '${{ secrets.SYSDIG_SECURE_TOKEN_B64 }}' | base64 -d)" >> $GITHUB_ENV
 
       - name: Sysdig Image Scan
         id: sysdig-scan
         uses: sysdiglabs/scan-action@v5
         with:
-            image-tag: ${{ env.FULL_IMAGE_NAME }}
-            sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
-            sysdig-secure-url: https://app.in1.sysdig.com
-
+          image-tag: ${{ env.FULL_IMAGE_NAME }}
+          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+          sysdig-secure-url: https://app.in1.sysdig.com
+  
 
 
       - name: Upload SARIF Report to GitHub Security Tab
