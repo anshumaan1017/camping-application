@@ -71,14 +71,15 @@ jobs:
             IMAGE="${{ env.FULL_IMAGE_NAME }}"
             sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
               --policy devsecops_image_policy_enforcement \
-              --output=sarif-file=image-results.sarif \
+              --output=sarif-file=image-results.json \
+              --separate-by-layer \
               "$IMAGE"
 
-      - name: Upload SARIF report
+      - name: Upload JSON report
         if: ${{ always() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-            sarif_file: image-results.sarif
+            sarif_file: image-results.json
 
 
 
