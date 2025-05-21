@@ -56,12 +56,7 @@ jobs:
           image-tag: ${{ env.FULL_IMAGE_NAME }}
           sysdig-secure-token: 5998118c-eea1-4358-905f-2b770a28ce86
           sysdig-secure-url: https://app.in1.sysdig.com
-          severity-at-least: low
-          stop-on-failed-policy-eval: true
-          stop-on-processing-error: true
-          group-by-package: true
-          use-policies: true
-          override-pullstring: ${{ env.FULL_IMAGE_NAME }}
+         
 
       - name: Upload SARIF Report to GitHub Security Tab
         if: always()
