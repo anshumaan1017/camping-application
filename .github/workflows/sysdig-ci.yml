@@ -1,9 +1,7 @@
 name: Docker Build, Prisma & Sysdig Scan
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   docker-build-scan:
