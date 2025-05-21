@@ -71,7 +71,7 @@ jobs:
             IMAGE="${{ env.FULL_IMAGE_NAME }}"
             sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
             --policy devsecops_image_policy_enforcement \
-            --separate-by-image \
+            --separate-by-layer \
             --full-vulns-table  \
             --detailed-policies-eval \
             --output=json-file=image-results.json \
