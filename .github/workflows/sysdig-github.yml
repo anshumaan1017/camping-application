@@ -53,6 +53,7 @@ jobs:
           sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
           sysdig-secure-url: https://app.in1.sysdig.com
           use-policies: devsecops_image_policy_enforcement
+          
       - name: Upload SARIF Report to GitHub Security Tab
         if: always()
         uses: github/codeql-action/upload-sarif@v3
