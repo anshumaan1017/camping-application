@@ -62,7 +62,7 @@ jobs:
           chmod +x ./sysdig-cli-scanner
           sudo mv ./sysdig-cli-scanner /usr/local/bin/
           sysdig-cli-scanner --help
-          sysdig-cli-scanner --version
+          sysdig-cli-scanner --version 
   
  
       - name: Run Sysdig CLI Scan with JSON output
