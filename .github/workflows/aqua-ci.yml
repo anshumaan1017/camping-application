@@ -72,6 +72,7 @@ jobs:
             sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
             --policy devsecops_image_policy_enforcement \
             --separate-by-layer \
+            --separate-by-image \
             --full-vulns-table  \
             --detailed-policies-eval \
             --output=json-file=image-results.json \
