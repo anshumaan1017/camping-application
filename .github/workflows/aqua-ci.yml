@@ -49,23 +49,44 @@ jobs:
           pcc_pass: ${{ secrets.pcc_pass }}
           image_name: ${{ env.FULL_IMAGE_NAME }}
 
-      - name: Decode Sysdig Token from Secrets
-        id: decode_token
+
+      - name: Decode Sysdig Token
         run: |
           echo "SYSDIG_SECURE_TOKEN=$(echo '${{ secrets.SYSDIG_SECURE_TOKEN_B64 }}' | base64 -d)" >> $GITHUB_ENV
+          echo "::add-mask::$(echo '${{ secrets.SYSDIG_SECURE_TOKEN_B64 }}' | base64 -d)"
 
-      - name: Sysdig Image Scan
-        id: sysdig-scan
-        uses: sysdiglabs/scan-action@v5
-        with:
-          image-tag: ${{ env.FULL_IMAGE_NAME }}
-          sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
-          sysdig-secure-url: https://app.in1.sysdig.com
+      - name: Download sysdig-cli-scanner
+        run: |
+          VERSION=$(curl -sL https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)
+          curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/${VERSION}/linux/amd64/sysdig-cli-scanner"
+          chmod +x ./sysdig-cli-scanner
+          sudo mv ./sysdig-cli-scanner /usr/local/bin/
+
+      - name: Run Sysdig CLI Scan
+        env:
+          SECURE_API_TOKEN: ${{ env.SYSDIG_SECURE_TOKEN }}
+        run: |
+          IMAGE="${{ env.FULL_IMAGE_NAME }}"
+          ./sysdig-cli-scanner --apiurl https://app.in1.sysdig.com "$IMAGE" --policy devsecops_image_policy_enforcement
+
+
+      # - name: Decode Sysdig Token from Secrets
+      #   id: decode_token
+      #   run: |
+      #     echo "SYSDIG_SECURE_TOKEN=$(echo '${{ secrets.SYSDIG_SECURE_TOKEN_B64 }}' | base64 -d)" >> $GITHUB_ENV
+
+      # - name: Sysdig Image Scan
+      #   id: sysdig-scan
+      #   uses: sysdiglabs/scan-action@v5
+      #   with:
+      #     image-tag: ${{ env.FULL_IMAGE_NAME }}
+      #     sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
+      #     sysdig-secure-url: https://app.in1.sysdig.com
   
 
 
-      - name: Upload SARIF Report to GitHub Security Tab
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ github.workspace }}/sarif.json
+      # - name: Upload SARIF Report to GitHub Security Tab
+      #   if: always()
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: ${{ github.workspace }}/sarif.json
