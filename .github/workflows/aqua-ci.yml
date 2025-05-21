@@ -61,6 +61,8 @@ jobs:
           curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/${VERSION}/linux/amd64/sysdig-cli-scanner"
           chmod +x ./sysdig-cli-scanner
           sudo mv ./sysdig-cli-scanner /usr/local/bin/
+          sysdig-cli-scanner --help
+
 
       - name: Run Sysdig CLI Scan
         env:
