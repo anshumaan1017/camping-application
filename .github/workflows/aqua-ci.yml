@@ -70,17 +70,17 @@ jobs:
         run: |
             IMAGE="${{ env.FULL_IMAGE_NAME }}"
             sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
+              --separate-by-layer \
               --policy devsecops_image_policy_enforcement \
               --output=json-file=image-results.json \
-              --separate-by-layer \
               "$IMAGE"
 
       - name: Upload JSON report
         if: ${{ always() }}
-        uses: github/codeql-action/upload-sarif@v3
+        uses: actions/upload-artifact@v4
         with:
-            sarif_file: image-results.json
-
+            name: aqua-image-scan-results
+            path: image-results.json
 
 
       # - name: Decode Sysdig Token from Secrets
