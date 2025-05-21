@@ -52,9 +52,7 @@ jobs:
       - name: Sysdig Image Scan
         id: sysdig-scan
         uses: sysdiglabs/scan-action@v5
-        env:
-           SYSDIG_SECURE_TOKEN: ${{ env.SYSDIG_SECURE_TOKEN }}
-         with:
+        with:
             image-tag: ${{ env.FULL_IMAGE_NAME }}
             sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
             sysdig-secure-url: https://app.in1.sysdig.com
