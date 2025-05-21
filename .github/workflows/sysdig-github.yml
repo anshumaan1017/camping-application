@@ -39,51 +39,6 @@ jobs:
           push: true
           tags: ${{ env.FULL_IMAGE_NAME }}
 
-      - name: Prisma Cloud Image Scan - NonProd
-        uses: PaloAltoNetworks/prisma-cloud-scan@v1.6.4
-        with:
-          pcc_console_url: https://asia-south1.cloud.twistlock.com/india-1131963775
-          pcc_user: ${{ secrets.pcc_user }}
-          pcc_pass: ${{ secrets.pcc_pass }}
-          image_name: ${{ env.FULL_IMAGE_NAME }}
-
-
-      - name: Decode Sysdig Token
-        run: |
-          echo "SYSDIG_SECURE_TOKEN=$(echo '${{ secrets.SYSDIG_SECURE_TOKEN_B64 }}' | base64 -d)" >> $GITHUB_ENV
-          echo "::add-mask::$(echo '${{ secrets.SYSDIG_SECURE_TOKEN_B64 }}' | base64 -d)"
-
-      - name: Download sysdig-cli-scanner
-        run: |
-          VERSION=$(curl -sL https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)
-          curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/${VERSION}/linux/amd64/sysdig-cli-scanner"
-          chmod +x ./sysdig-cli-scanner
-          sudo mv ./sysdig-cli-scanner /usr/local/bin/
-          sysdig-cli-scanner --help
- 
-
-      - name: Run Sysdig CLI Scan with JSON output
-        env:
-            SECURE_API_TOKEN: ${{ env.SYSDIG_SECURE_TOKEN }}
-        run: |
-            IMAGE="${{ env.FULL_IMAGE_NAME }}"
-            sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
-            --policy devsecops_image_policy_enforcement \
-            --separate-by-layer \
-            --separate-by-image \
-            --full-vulns-table  \
-            --detailed-policies-eval \
-            --output=json-file=image-results.json \
-            "$IMAGE"
-         
-
-      - name: Upload JSON report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-            name: sysdig-image-scan-results
-            path: image-results.json
-
 
       - name: Decode Sysdig Token from Secrets
         id: decode_token
@@ -97,6 +52,10 @@ jobs:
           image-tag: ${{ env.FULL_IMAGE_NAME }}
           sysdig-secure-token: ${{ env.SYSDIG_SECURE_TOKEN }}
           sysdig-secure-url: https://app.in1.sysdig.com
+          stop-on-failed-policy-eval: true
+          stop-on-processing-error: true
+          extra-parameters: full-vulns-table,detailed-policies-eval
+
   
 
 
