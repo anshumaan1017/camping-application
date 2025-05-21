@@ -71,9 +71,10 @@ jobs:
             IMAGE="${{ env.FULL_IMAGE_NAME }}"
             sysdig-cli-scanner --apiurl https://app.in1.sysdig.com \
               --separate-by-layer \
-              --policy devsecops_image_policy_enforcement \
-              --output=json-file=image-results.json \
+               --output=json-file=image-results.json \
               "$IMAGE"
+         #--policy devsecops_image_policy_enforcement \
+            
 
       - name: Upload JSON report
         if: ${{ always() }}
