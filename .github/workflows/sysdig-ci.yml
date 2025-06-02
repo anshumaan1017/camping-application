@@ -3,7 +3,7 @@ name: Docker Build, Prisma & Sysdig Scan
 on:
   workflow_dispatch:
 
-jobs:
+jobs: 
   docker-build-scan:
     name: Docker Build and Scan 
     runs-on: ubuntu-latest
